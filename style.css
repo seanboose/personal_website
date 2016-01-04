@@ -20,10 +20,16 @@ body { font-family: Arial, Helvetica, sans-serif; }
 	background: url(images/header_glow.png) no-repeat;
 }
 
+/* move the content of the header down from the header div's start */
+#header {
+	padding-top: 51px;
+}
+
 #logo {
 	background: url(images/logo.png) no-repeat;
 	height: 97px;
 	width: 264px;
+	float: left;
 }
 
 /* move the logo's text off of the screen */
@@ -31,7 +37,31 @@ body { font-family: Arial, Helvetica, sans-serif; }
 	text-indent: -9999px;
 }
 
-/* move the content of the header down from the header div's start */
-#header {
-	padding-top: 51px;
+#tagline {
+	float: left;
+	padding-top: 46px;
+	padding-left: 20px;
 }
+
+#tagline h3{
+	font-size: 52px; color: #c8c8c8;
+}
+
+ul#menu {
+	list-style: none;
+	padding-top: 72px;
+}
+
+/* link formatting within list items within menu's unordered list */
+ul#menu li a {
+	font-size: 30px;
+	color: #000000;
+	text-decoration: none;
+}
+
+ul#menu li {
+	float: left;
+	padding-left: 0px;
+	padding-right: 100px;
+}
+
