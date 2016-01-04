@@ -2,12 +2,36 @@ body, div, h1, h2, h3, h4, h5, h6, p, ul, img {margin:0px; padding:0px; }
 /* removes default margin, padding. "css reset" */
 
 body { font-family: Arial, Helvetica, sans-serif; }
+
+/* affects all container class objects */
 .container {
 	width: 800px;
 	/* 0 auto means no margin at the top  and auto centered horizontally */
 	margin: 0 auto;
 }
 
+/* header background */
 #main {
 	background: url(images/header_slice.jpg) repeat-x;
+}
+
+/* non-repeating glow; affects container class in main only */
+#main .container {
+	background: url(images/header_glow.png) no-repeat;
+}
+
+#logo {
+	background: url(images/logo.png) no-repeat;
+	height: 97px;
+	width: 264px;
+}
+
+/* move the logo's text off of the screen */
+#logo h1 {
+	text-indent: -9999px;
+}
+
+/* move the content of the header down from the header div's start */
+#header {
+	padding-top: 51px;
 }
