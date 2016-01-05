@@ -64,6 +64,10 @@ ul#menu li a {
 	text-decoration: none;
 }
 
+#content {
+	width: 510px;
+	float: left;
+}
 #content h2 {
 	font-size: 36px;
 	color: #6698CB;
@@ -104,4 +108,54 @@ ul#menu li a {
 #news p {
 	padding-top: 10px;
 	padding-bottom: 14px;
+}
+
+#sidebar {
+	float: left;
+	margin-left: 55px;
+	margin-top: 40px;
+	background: #f1f1f1;
+	border: 2px solid #000000;
+	padding: 15px 15px 30px 15px;
+}
+#sidebar h3 {
+	font-size: 24px;
+	color: #044055;
+	font-weight: normal;
+	padding-bottom: 20px;
+	padding-left: 15px;
+}
+#sidebar ul {
+	list-style: none;
+	padding-bottom: 25px;
+}
+#sidebar ul a {
+	font-size: 14px;
+	color: #393838;
+}
+ul#sidebar_nouns_ul li {
+	padding-bottom: 5px;
+	padding-left: 20px;
+}
+ul#sidebar_nouns_ul li a {
+	font-size: 16px;
+}
+li#horse {
+	background: url(images/list_icon.png) no-repeat;
+}
+li#tornado {
+	background: url(images/list_icon.png) no-repeat;
+}
+li#nacho {
+	background: url(images/list_icon.png) no-repeat;
+}
+
+a.button {
+	color: #ffffff;
+	text-decoration: none;
+	background: url(images/button_slice.png) repeat-x;
+	margin-left: 30px;
+	margin-right: 30px;
+	padding: 13px 23px;
+	border: 2px solid #000000;
 }
