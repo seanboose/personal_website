@@ -61,8 +61,17 @@ body {
 }
 
 #tiling_second {
-	height: 200px;
-	background: url(images/bg_tile_recl_fc.png) repeat;
+	height: 600px;
+	background: url(images/bg_tile_brinstar_color_lg.png) no-repeat;
+	background-position: center top;
+	background-color: #000000;
+}
+
+.content h2{
+	font-size: 60px;
+}
+.content h3 {
+	font-size: 30px;
 }
 
 #developer {
@@ -74,7 +83,8 @@ body {
 }
 
 #tiling_third {
-	height: 200px;
+	height: 613px;
 	background: url(images/bg_tile_recl_fc.png) repeat;
 }
+
 
