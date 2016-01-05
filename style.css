@@ -20,7 +20,7 @@ a {
 
 /* ------- header ------- */
 #header {
-	width: 100%;
+	width: 200%;
 	position: fixed;
 	height: 35px;
 	background-color: #353535;
@@ -37,6 +37,7 @@ a {
 
 /* ------- art backgrounds ------- */
 .background {
+	width: 200%;
 	-moz-box-shadow: 	inset 0px -50px 50px -25px rgba(0,0,0,0.75),
 	            		inset 0px 50px 50px -25px rgba(0,0,0,0.75);
 	-webkit-box-shadow: inset 0px -50px 50px -25px rgba(0,0,0,0.75),
@@ -78,6 +79,7 @@ a {
 
 /* ------- content sections ------- */
 .content {
+	width: 200%;
 	background-color: #a0a0a0;
 	color: #ffffff;
 	padding-left: 200px;
