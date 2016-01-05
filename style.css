@@ -51,6 +51,7 @@ body {
 ul#menu {
 	list-style: none;
 	padding-top: 72px;
+	padding-bottom: 30px;
 }
 ul#menu li {
 	float: left;
@@ -158,4 +159,12 @@ a.button {
 	margin-right: 30px;
 	padding: 13px 23px;
 	border: 2px solid #000000;
+}
+
+#footer {
+	background: url(images/footer_slice.jpg) repeat-x;
+	padding-top: 20px;
+	padding-bottom: 40px;
+	margin-top: 40px;
+	color:#ffffff;
 }
