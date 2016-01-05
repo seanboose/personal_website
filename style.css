@@ -142,13 +142,32 @@ ul#sidebar_nouns_ul li {
 ul#sidebar_nouns_ul li a {
 	font-size: 16px;
 }
-li#horse {
+ul#sidebar_verbs_ul li {
+	padding-bottom: 5px;
+	padding-left: 20px;
+}
+ul#sidebar_verbs_ul li a {
+	font-size: 16px;
+}
+li#n_horse {
 	background: url(images/list_icon.png) no-repeat;
 }
-li#tornado {
+li#n_tornado {
 	background: url(images/list_icon.png) no-repeat;
 }
-li#nacho {
+li#n_nacho {
+	background: url(images/list_icon.png) no-repeat;
+}
+li#v_wrassle {
+	background: url(images/list_icon.png) no-repeat;
+}
+li#v_playwithahorse {
+	background: url(images/list_icon.png) no-repeat;
+}
+li#v_defenestrate {
+	background: url(images/list_icon.png) no-repeat;
+}
+li#v_nacho {
 	background: url(images/list_icon.png) no-repeat;
 }
 
