@@ -8,7 +8,7 @@ body {
 }
 
 .container {
-	width: 800px;
+	width: 1200px;
 	margin: 0 auto;
 }
 
@@ -28,7 +28,30 @@ body {
 	float:right;
 }
 
-#top_tiling {
-	height: 400px;
+#tiling_top {
+	height: 519px;
 	background: url(images/bg_tile_recl_gs.png) repeat;
 }
+
+#nameplate {
+	background-color: #a0a0a0;
+	color: #ffffff;
+	padding-left: 200px;
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+#nameplate h1 {
+	font-size: 60px;
+}
+
+#nameplate h2 {
+	font-size: 30px;
+	padding-left: 20px;
+}
+
+#tiling_second {
+	height: 200px;
+	background: url(images/bg_tile_recl_fc.png) repeat;
+}
+
