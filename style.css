@@ -26,15 +26,17 @@ a {
 	color: #d0d0d0;
 }
 #header_content {
-	width: 1200px;
+	/*width: 1000px;*/
 	margin: 0 auto;
 }
 #header_home {
 	padding-top: 5px;
+	padding-left: 100px;
 	float:left;
 }
 #header_noplace {
 	padding-top: 10px;
+	padding-right: 100px;
 	float:right;
 }
 
