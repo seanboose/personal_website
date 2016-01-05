@@ -8,10 +8,9 @@ body {
 }
 
 .container {
-	width: 1200px;
+	width: 100%;
 	margin: 0 auto;
 }
-
 
 a {
 	color:inherit;
@@ -26,6 +25,10 @@ a {
 	background-color: #353535;
 	color: #d0d0d0;
 }
+#header_content {
+	width: 1200px;
+	margin: 0 auto;
+}
 #header_home {
 	padding-top: 5px;
 	float:left;
@@ -37,7 +40,6 @@ a {
 
 /* ------- art backgrounds ------- */
 .background {
-	width: 100%;
 	-moz-box-shadow: 	inset 0px -50px 50px -25px rgba(0,0,0,0.75),
 	            		inset 0px 50px 50px -25px rgba(0,0,0,0.75);
 	-webkit-box-shadow: inset 0px -50px 50px -25px rgba(0,0,0,0.75),
@@ -80,13 +82,13 @@ a {
 /* ------- content sections ------- */
 .content {
 	width: 100%;
-	background-color: #a0a0a0;
-	color: #ffffff;
 	padding-left: 200px;
 	padding-top: 100px;
 	padding-bottom: 100px;
 	border-top: 2px solid #303030;
 	border-bottom: 2px solid #303030;
+	background-color: #a0a0a0;
+	color: #ffffff;
 }
 .content h2{
 	font-size: 60px;
