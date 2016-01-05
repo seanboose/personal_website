@@ -7,184 +7,88 @@ body {
 	background: #d2d2d2;
 }
 
-/* affects all container class objects */
 .container {
-	width: 800px;
-	/* 0 auto means no margin at the top  and auto centered horizontally */
+	width: 1200px;
 	margin: 0 auto;
 }
 
-/* header background */
-#main {
-	background: url(images/header_slice.jpg) repeat-x;
-}
-/* non-repeating glow; affects container class in main only */
-#main .container {
-	background: url(images/header_glow.png) no-repeat;
+
+a {
+	color:inherit;
+	text-decoration: none;
 }
 
-/* move the content of the header down from the header div's start */
+/* ------- header ------- */
 #header {
-	padding-top: 51px;
+	width: 100%;
+	position: fixed;
+	height: 35px;
+	background-color: #353535;
+	color: #d0d0d0;
 }
-
-#logo {
-	background: url(images/logo.png) no-repeat;
-	height: 97px;
-	width: 264px;
-	float: left;
+#header_home {
+	padding-top: 5px;
+	float:left;
 }
-/* move the logo's text off of the screen */
-#logo h1 {
-	text-indent: -9999px;
-}
-
-#tagline {
-	float: left;
-	padding-top: 46px;
-	padding-left: 20px;
-	width: 400px;
-}
-#tagline h3{
-	font-size: 52px; color: #c8c8c8;
-}
-
-ul#menu {
-	list-style: none;
-	padding-top: 72px;
-	padding-bottom: 30px;
-}
-ul#menu li {
-	float: left;
-	padding-left: 0px;
-	padding-right: 100px;
-}
-/* link formatting within list items within menu's unordered list */
-ul#menu li a {
-	font-size: 30px;
-	color: #000000;
-	text-decoration: none;
-}
-
-#content {
-	width: 510px;
-	float: left;
-}
-#content h2 {
-	font-size: 36px;
-	color: #6698CB;
-	padding-top: 40px;
-}
-#content h3 {
-	font-size: 24px;
-	color: #444444;
-	padding-top: 20px;
-	padding-bottom: 10px;
-}
-#content h4 {
-	font-size: 18px;
-	color: #373737;
-	font-weight: normal;
-}
-#content p {
-	font-size: 12px;
-	color: #595858;
-	padding-top: 20px;
-}
-#content small {
-	font-size: 12px;
-	color: #373737;
-}
-#content a {
-	color: #0f6c8d;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-#news {
-	padding-top: 20px;
-}
-#news h3 {
-	padding-bottom: 10px;
-}
-#news p {
+#header_noplace {
 	padding-top: 10px;
-	padding-bottom: 14px;
+	float:right;
 }
 
-#sidebar {
-	float: left;
-	margin-left: 55px;
-	margin-top: 40px;
-	background: #f1f1f1;
-	border: 2px solid #000000;
-	padding: 15px 15px 30px 15px;
+/* ------- art backgrounds ------- */
+.background {
+	-moz-box-shadow: 	inset 0px -50px 50px -25px rgba(0,0,0,0.75),
+	            		inset 0px 50px 50px -25px rgba(0,0,0,0.75);
+	-webkit-box-shadow: inset 0px -50px 50px -25px rgba(0,0,0,0.75),
+	            		inset 0px 50px 50px -25px rgba(0,0,0,0.75);
+	box-shadow: 		inset 0px -50px 50px -25px rgba(0,0,0,0.75),
+	            		inset 0px 50px 50px -25px rgba(0,0,0,0.75);
 }
-#sidebar h3 {
-	font-size: 24px;
-	color: #044055;
-	font-weight: normal;
-	padding-bottom: 20px;
-	padding-left: 15px;
+#tiling_top {
+	height: 570px;
+	background: url(images/bg_tile_recl_gs.png) repeat;
 }
-#sidebar ul {
-	list-style: none;
-	padding-bottom: 25px;
+#tiling_second {
+	height: 600px;
+	background: url(images/bg_brinstar.png) no-repeat;
+	background-position: center top;
+	background-color: #000000;
 }
-#sidebar ul a {
-	font-size: 14px;
-	color: #393838;
+#tiling_third {
+	height: 613px;
+	background: url(images/bg_tile_recl_fc.png) repeat;
 }
-ul#sidebar_nouns_ul li {
-	padding-bottom: 5px;
-	padding-left: 20px;
-}
-ul#sidebar_nouns_ul li a {
-	font-size: 16px;
-}
-ul#sidebar_verbs_ul li {
-	padding-bottom: 5px;
-	padding-left: 20px;
-}
-ul#sidebar_verbs_ul li a {
-	font-size: 16px;
-}
-li#n_horse {
-	background: url(images/list_icon.png) no-repeat;
-}
-li#n_tornado {
-	background: url(images/list_icon.png) no-repeat;
-}
-li#n_nacho {
-	background: url(images/list_icon.png) no-repeat;
-}
-li#v_wrassle {
-	background: url(images/list_icon.png) no-repeat;
-}
-li#v_playwithahorse {
-	background: url(images/list_icon.png) no-repeat;
-}
-li#v_defenestrate {
-	background: url(images/list_icon.png) no-repeat;
-}
-li#v_nacho {
-	background: url(images/list_icon.png) no-repeat;
+#tiling_fourth {
+	height: 750px;
+	background: url(images/bg_loading.png) no-repeat;
+	background-position: center top;
+	background-color: #61af95;
 }
 
-a.button {
+/* ------- name splash ------- */
+#nameplate h1 {
+	font-size: 60px;
+	padding-bottom: 10px;
+}
+#nameplate h2 {
+	font-size: 30px;
+	padding-left: 20px;
+}
+
+
+/* ------- content sections ------- */
+.content {
+	background-color: #a0a0a0;
 	color: #ffffff;
-	text-decoration: none;
-	background: url(images/button_slice.png) repeat-x;
-	margin-left: 30px;
-	margin-right: 30px;
-	padding: 13px 23px;
-	border: 2px solid #000000;
+	padding-left: 200px;
+	padding-top: 100px;
+	padding-bottom: 100px;
+	border-top: 2px solid #303030;
+	border-bottom: 2px solid #303030;
 }
-
-#footer {
-	background: url(images/footer_slice.jpg) repeat-x;
-	padding-top: 20px;
-	padding-bottom: 40px;
-	margin-top: 40px;
-	color:#ffffff;
+.content h2{
+	font-size: 60px;
+}
+.content h3 {
+	font-size: 30px;
 }
