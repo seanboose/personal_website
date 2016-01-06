@@ -101,3 +101,8 @@ a {
 .content h3 {
 	font-size: 30px;
 }
+.content p {
+	font-size: 20px;
+	padding-left: 20px;
+	line-height: 140%;
+}
