@@ -9,16 +9,17 @@
   	<link rel="apple-touch-icon" href="icon.png"/>
 
   	<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   </head>
 
-<body>
+<body id="top">
 
 	<!-- header bar -->
 	<div id="header" class="container">
 		<div id="header_content">
 
 			<div id="header_home">
-				<h2><a href="#">HOME</a></h2>
+				<h2><a href="#top" class="scroll">HOME</a></h2>
 			</div>
 
 			<div id="header_noplace">
@@ -35,10 +36,10 @@
 	<!--name splash screen -->
 	<div id="nameplate" class="container">
 		<div class="content">
-			<h1>sean boose.</h1>
-			<h2><a href="#developer">developer</a><br />
-				<a href="#artist">artist</a><br />
-				<a href="#alright_guy">all around pretty alright guy</a></h2>
+			<h1 class="name">sean boose.</h1>
+			<h2><a href="#developer" class="scroll">developer</a><br />
+				<a href="#artist" class="scroll">artist</a><br />
+				<a href="#alright_guy" class="scroll">all around pretty alright guy</a></h2>
 		</div>
 	</div>
 
@@ -48,7 +49,6 @@
 	<!-- developer content -->
 	<div id="developer" class="container">
 		<div class="content">
-			<a name="developer"></a>
 			<h2>developer.</h2>
 		</div>
 	</div>
@@ -59,7 +59,6 @@
 	<!-- artist content -->
 	<div id="artist" class="container">
 		<div class="content">
-			<a name="artist"></a>
 			<h2>artist.</h2>
 		</div>
 	</div>
@@ -70,7 +69,6 @@
 	<!-- alright guy content -->
 	<div id="alright_guy" class="container">
 		<div class="content">
-			<a name="alright_guy"></a>
 			<h2>all around pretty alright guy.</h2>
 		</div>
 	</div>
@@ -78,4 +76,5 @@
 	<!-- fourth background image -->
 	<div id="tiling_fifth" class="background container"></div>
 
+	<script src="index.js"></script>
 </body>
