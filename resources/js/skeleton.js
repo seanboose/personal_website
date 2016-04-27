@@ -10,7 +10,7 @@ var scene = new THREE.Scene;
 
 // Create a cube
 var cubeGeometry = new THREE.CubeGeometry(100, 100, 100);
-var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x1ec876 });
+var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff33cc });
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
  
 cube.rotation.y = Math.PI * 45 / 180;
@@ -37,5 +37,16 @@ var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff99cc, side: THREE.
 var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
 
 scene.add(skybox);
- 
-renderer.render(scene, camera);
+
+//renderer.render(scene, camera);
+
+var clock = new THREE.Clock; 
+function render(){
+	renderer.render(scene, camera);
+
+	cube.rotation.y -= clock.getDelta();
+
+	requestAnimationFrame(render);
+}
+
+render();
