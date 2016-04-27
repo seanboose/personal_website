@@ -30,5 +30,12 @@ var pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(0, 300, 200);
  
 scene.add(pointLight);
+
+// Add skybox
+var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
+var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff99cc, side: THREE.BackSide});
+var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+
+scene.add(skybox);
  
 renderer.render(scene, camera);
