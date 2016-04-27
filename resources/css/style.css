@@ -50,27 +50,27 @@ a {
 }
 #tiling_first {
 	height: 570px;
-	background: url(images/bg_tile_recl_gs.png) repeat 0px 0px fixed;
+	background: url(../images/bg_tile_recl_gs.png) repeat 0px 0px fixed;
 }
 #tiling_second {
 	height: 600px;
-	background: url(images/bg_brinstar.png) no-repeat;
+	background: url(../images/bg_brinstar.png) no-repeat;
 	background-position: center top;
 	background-color: #000000;
 }
 #tiling_third {
 	height: 613px;
-	background: url(images/bg_tile_recl_fc.png) repeat 0px 0px fixed;
+	background: url(../images/bg_tile_recl_fc.png) repeat 0px 0px fixed;
 }
 #tiling_fourth {
 	height: 660px;
-	background: url(images/bg_loading.png) no-repeat;
+	background: url(../images/bg_loading.png) no-repeat;
 	background-position: center top;
 	background-color: #61af95;
 }
 #tiling_fifth {
 	height: 570px;
-	background: url(images/bg_tile_recl_gs.png) repeat 0px 0px fixed;
+	background: url(../images/bg_tile_recl_gs.png) repeat 0px 0px fixed;
 }
 
 /* ------- name splash ------- */
