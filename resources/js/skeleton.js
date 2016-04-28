@@ -1,6 +1,3 @@
-function boneFileListener(){
-	console.log(this.responseText);
-}
 
 function init(){
 	console.log("Initializing WebGl/three.js stuff...");
@@ -60,8 +57,8 @@ function init(){
 	// TODO: CHANGE BEFORE PUSHING?
 	bone_address = "resources/ogre-files/ogre-skeleton.bf";
 	// bone_address = "http://www.seanboose.com/resources/ogre-files/ogre-skeleton.bf";
-	xml_request.addEventListener("load", boneFileListener);
-	xml_request.open("GET", bone_address);
+	xml_request.addEventListener("load", parseBoneFile);
+	xml_request.open("GET", bone_address, false);
 	xml_request.send();
 	console.log("Bone file requested.");
 	

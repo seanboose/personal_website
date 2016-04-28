@@ -92,3 +92,42 @@ class Skeleton {
 		this.bone_vector = [];
 	}
 }
+
+function parseBoneFile(){
+	console.log("Parsing bone file...");
+	text = this.responseText;
+
+	line_num = 0;
+	lines = text.split("\n");
+	console.log(lines);
+	console.log(lines.length);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
