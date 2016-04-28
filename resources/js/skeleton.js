@@ -1,3 +1,9 @@
+var bone_text;
+
+function onBoneFileLoaded(){
+	bone_text = this.responseText;
+}
+
 
 function init(){
 	console.log("Initializing WebGl/three.js stuff...");
@@ -46,21 +52,22 @@ function init(){
 	var clock = new THREE.Clock; 
 	render();
 
-	var bone = new Bone(1,2,3,4,5);
-	var doot_root = new Skeleton(1,2,3);
-
-
-	var xml_request = new XMLHttpRequest();
-
-
 	console.log("Loading bone file...");
-	// TODO: CHANGE BEFORE PUSHING?
-	bone_address = "resources/ogre-files/ogre-skeleton.bf";
-	// bone_address = "http://www.seanboose.com/resources/ogre-files/ogre-skeleton.bf";
-	xml_request.addEventListener("load", parseBoneFile);
+	var xml_request = new XMLHttpRequest();
+	var bone_address = "resources/ogre-files/ogre-skeleton.bf";
+	rawbones
+	xml_request.addEventListener("load", onBoneFileLoaded);
 	xml_request.open("GET", bone_address, false);
 	xml_request.send();
-	console.log("Bone file requested.");
+	console.log("Bone file loaded.");
+
+	var rawbones = parseBoneFile(bone_text);
+	console.log("Returned bones length: " + rawbones.length);
+	var skeleton = createSkeletonFromRawBones(rawbones);
+
+	console.log("Created skeleton?");
+
+
 	
 
 	function render(){
