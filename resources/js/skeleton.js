@@ -1,9 +1,61 @@
 var bone_text;
+var skeleton = new Skeleton(0,0,0);
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+var scene = new THREE.Scene;
+var bone_material = new THREE.LineBasicMaterial({color: 0xff00ff});
 
 function onBoneFileLoaded(){
 	bone_text = this.responseText;
 }
 
+function mat4XVec4(m, v){
+	var v0 = m[0]*v[0] + m[4]*v[1] + m[8]*v[2]  + m[12]*v[3];
+	var v1 = m[1]*v[0] + m[5]*v[1] + m[9]*v[2]  + m[13]*v[3];
+	var v2 = m[2]*v[0] + m[6]*v[1] + m[10]*v[2] + m[14]*v[3];
+	var v3 = m[3]*v[0] + m[7]*v[1] + m[11]*v[2] + m[15]*v[3];
+
+	return vec4.fromValues(v0,v1,v2,v3);
+}
+
+function drawBone(bone, trans){
+	var bone_geometry = new THREE.Geometry();
+
+	var p0 = mat4XVec4(trans, mat4XVec4(bone.ti, vec4.fromValues(0,0,0,1)));
+	var p1 = mat4XVec4(trans, mat4XVec4(bone.ti, mat4XVec4(bone.si, vec4.fromValues(bone.l,0,0,1))));
+
+	var geom = new THREE.Geometry();
+	// geom.vertices.push(new vec3.fromValues(p0[0], p0[1], p0[2]));
+	// geom.vertices.push(new vec3.fromValues(p1[0], p1[1], p1[2]));
+	// geom.vertices.push(new THREE.Vector3(-20, 0, 0));
+	geom.vertices.push(new THREE.Vector3(p0[0], p0[1], p0[2]))
+	geom.vertices.push(new THREE.Vector3(p1[0], p1[1], p1[2]))
+	// geom.vertices.push(new THREE.Vector3(-20, 0, 0));
+
+	var line = new THREE.Line(geom, bone_material);
+	scene.add(line);
+
+	// console.log("id: " + bone.id);
+	// console.log(p0);
+	// console.log(p1);
+
+	var temp_trans = mat4.create();
+	var new_trans = mat4.create();
+	mat4.multiply(temp_trans, bone.ti, bone.si);
+	mat4.multiply(new_trans, trans, temp_trans);
+
+	for(i=0; i<bone.children.length; ++i){
+		drawBone(bone.children[i], new_trans);
+	}
+}
+
+function drawSkeleton(){
+
+	for(i=0; i<skeleton.children.length; ++i){
+		var bone = skeleton.children[i];
+		var current_trans = mat4.create();
+		drawBone(bone, current_trans);
+	}
+}
 
 function init(){
 	console.log("Initializing WebGl/three.js stuff...");
@@ -12,26 +64,13 @@ function init(){
 	var height = window.innerHeight;
 
 	// Set up renderer
-	var renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setSize(width, height);
 	document.body.appendChild(renderer.domElement);
 	 
-	var scene = new THREE.Scene;
-
-	// Create a cube
-	var cubeGeometry = new THREE.CubeGeometry(100, 100, 100);
-	var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff33cc });
-	var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-	 
-	cube.rotation.y = Math.PI * 45 / 180;
-	 
-	scene.add(cube);
-
 	// Create camera
 	var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-	camera.position.y = 160;
-	camera.position.z = 400;
-	camera.lookAt(cube.position);
+	camera.position.set(0,0,2);
+	camera.lookAt(new THREE.Vector3(0,0,0));
 
 	scene.add(camera);
 
@@ -45,12 +84,20 @@ function init(){
 	var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
 	var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff99cc, side: THREE.BackSide});
 	var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-
 	scene.add(skybox);
 
-	// Render the cube with animation
-	var clock = new THREE.Clock; 
-	render();
+    var material = new THREE.LineBasicMaterial({
+        color: 0x0000ff
+    });
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3(-10, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 10, 0));
+    geometry.vertices.push(new THREE.Vector3(10, 0, 0));
+    // geometry.vertices.push(vec3.fromValues(-10,0,0));
+    // geometry.vertices.push(vec3.fromValues(0,10,0));
+    // geometry.vertices.push(vec3.fromValues(10,0,0));
+ 	var line = new THREE.Line(geometry, material);
+	scene.add(line)
 
 	console.log("Loading bone file...");
 	var xml_request = new XMLHttpRequest();
@@ -63,18 +110,19 @@ function init(){
 
 	var rawbones = parseBoneFile(bone_text);
 	console.log("Returned bones length: " + rawbones.length);
-	var skeleton = createSkeletonFromRawBones(rawbones);
+	skeleton = createSkeletonFromRawBones(rawbones);
 
 	console.log("Created skeleton?");
 
+	render();
 
 	
 
 	function render(){
+		drawSkeleton();
+		// cube.rotation.y -= clock.getDelta();
+
 		renderer.render(scene, camera);
-
-		cube.rotation.y -= clock.getDelta();
-
 		requestAnimationFrame(render);
 	}
 }

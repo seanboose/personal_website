@@ -2,70 +2,32 @@ var rawbones = [];
 
 class Bone {
 
-	// int id;
-	// int pid;
-	// float l;
-	// std::list<Bone*> children;
-
-	// // Undeformed translation    from local to parent
-	// glm::mat4 ti;
-	// // Undeformed rotation       from local to parent
-	// glm::mat4 ri;
-	// // Deformed   rotation       from local to parent
-	// glm::mat4 si;
-
-	// // Undeformed transformation from local to world
-	// bool ui_set = false;
-	// glm::mat4 ui;
-	// // Deformed   transformation from local to world
-	// glm::mat4 di;
-
-	// std::vector<glm::vec4> vertices;
-    // std::vector<glm::uvec2> indices;
-    // GLuint VAO, VBO, EBO;
-
-    // std::vector<float> weights;
-
 	constructor (id, l, ti, ri, pid){
 		this.id = id;
 		this.pid = pid;
 		this.l = l;
 		this.children = [];
 
+		// Undeformed translation    from local to parent
 		this.ti = mat4.clone(ti);
+		// Undeformed rotation       from local to parent
 		this.ri = mat4.clone(ri);
+		// Deformed   rotation       from local to parent
 		this.si = mat4.clone(ri);
 
 		this.ui_set = false;
+		// Undeformed transformation from local to world
 		this.ui = mat4.create();
+		// Deformed   transformation from local to world
 		this.di = mat4.create();
 
-		this.vertices = [];
-		this.vertices.push(vec4.create());
-		this.vertices.push(vec4.create());
-		this.indices = [vec2.fromValues(0,1)];
+		// this.vertices = [];
+		// this.vertices.push(vec4.create());
+		// this.vertices.push(vec4.create());
+		// this.indices = [vec2.fromValues(0,1)];
 		this.weights = [];
 
-		// this.glmSetup();
 	}
-
-
-	// glmSetup(){
-	// 	this.VAO = gl.createBuffer();
-	// 	gl.bindBuffer(gl.ARRAY_BUFFER, this.VBO);
-	// 	gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
-	// 	gl.vertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	// 	gl.enableVertexAttribArray(0);
-
-	// 	this.EBO = gl.createBuffer();
-	// 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.EBO);
-	// 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
-
-	// 	// Probably not necessary
-	// 	gl.bindBuffer(gl.ARRAY_BUFFER, 0);
-	// 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0);
-	// }
-
 }
 
 
