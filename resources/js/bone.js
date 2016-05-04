@@ -9,18 +9,17 @@ class Bone {
 		this.children = [];
 
 		// Undeformed translation    from local to parent
-		this.ti = mat4.clone(ti);
+		this.ti = ti.clone();
 		// Undeformed rotation       from local to parent
-		this.ri = mat4.clone(ri);
+		this.ri = ri.clone();
 		// Deformed   rotation       from local to parent
-		this.si = mat4.clone(ri);
-		console.log(this.si);
+		this.si = ri.clone();
 
 		this.ui_set = false;
 		// Undeformed transformation from local to world
-		this.ui = mat4.create();
+		this.ui = new THREE.Matrix4();
 		// Deformed   transformation from local to world
-		this.di = mat4.create();
+		this.di = new THREE.Matrix4();
 
 		this.weights = [];
 
@@ -53,7 +52,8 @@ class Skeleton {
 	constructor (x, y, z){
 		this.children = [];
 		this.bone_vector = [];
-		this.root = vec3.fromValues(x,y,z);
+		// this.root = vec3.fromValues(x,y,z);
+		this.root = new THREE.Vector3(x,y,z);
 
 	}
 }
@@ -64,7 +64,7 @@ function createSkeletonFromRawBones(rawbones){
 
 	bones = [];
 	for(var i=0; i<rawbones.length -1; ++i){
-		bones.push(new Bone(-2, -2, mat4.create(), mat4.create(), -2));
+		bones.push(new Bone(-2, -2, new THREE.Matrix4(), new THREE.Matrix4(), -2));
 	}
 
 	var cid;
@@ -75,12 +75,12 @@ function createSkeletonFromRawBones(rawbones){
 
 	var length;
 	var bone_vec;
-	var ti = mat4.create();
-	var ri = mat4.create();
+	var ti = new THREE.Matrix4();
+	var ri = new THREE.Matrix4();
 
-	var t_hat = vec3.create();
-	var n_hat = vec3.create();
-	var b_hat = vec3.create();
+	var t_hat = new THREE.Vector3();
+	var n_hat = new THREE.Vector3();
+	var b_hat = new THREE.Vector3();
 
 	var doot;
 	var new_bone;
@@ -94,56 +94,53 @@ function createSkeletonFromRawBones(rawbones){
 			continue;
 		}
 
-		bone_vec = vec3.fromValues(child.dx, child.dy, child.dz);
-		length = vec3.length(bone_vec);
+		bone_vec = new THREE.Vector3(child.dx, child.dy, child.dz);
+		length = bone_vec.length();
 
 		parent = rawbones[child.parent];
 		pid = parent.id;
 
 		if(pid==-1){
 			// Orphaned bone
-			var trans_vec = vec3.fromValues(doot.root[0], doot.root[1], doot.root[2])
-			mat4.translate(ti, mat4.create(), trans_vec);
+			ti = new THREE.Matrix4().makeTranslation(doot.root.x, doot.root.y, doot.root.z);
 		}
 		else {
 			// Regular-ass bone
-			mat4.translate(ti, mat4.create(), vec3.fromValues(bones[pid].l, 0, 0));
+			ti = new THREE.Matrix4().makeTranslation(bones[pid].l, 0, 0);
 		}
 
 		// Find coord axes (in world coords)
-		vec3.normalize(t_hat, bone_vec);
+		t_hat = bone_vec.clone();
+		t_hat.normalize()
+
 		n_hat = determineNHat(t_hat);
-		console.log("nhat");
-		console.log(n_hat);
-		vec3.cross(b_hat, t_hat, n_hat);
 
-		var tbn = mat4.create();
+		b_hat = new THREE.Vector3().crossVectors(t_hat, n_hat);
+		b_hat.normalize();
 
-		mat4.set(tbn,
-			t_hat[0], t_hat[1], t_hat[2], 0,
-			n_hat[0], n_hat[1], n_hat[2], 0,
-			b_hat[0], b_hat[1], b_hat[2], 0,
-			0,        0,        0,        1);
+		var tbn = new THREE.Matrix4().identity();
+
+		// For some fucking reason, set is row-major and EVERYTHING ELSE
+		// is column major. 
+		tbn.set(
+			t_hat.x, n_hat.x, b_hat.x, 0,
+			t_hat.y, n_hat.y, b_hat.y, 0,
+			t_hat.z, n_hat.z, b_hat.z, 0,
+			0,       0,       0,       1);
 
 	    // Find Ri from tbn
 	    // R(0)...R(i-1)*R(i) = tbn
 		var temp_pid = pid;
 		while(temp_pid > -1){
-			// Hold THIS bone's ri
-			var temp_ri = mat4.clone(ri);
-			// Hold parent's bone's ri
-			var temp_p_ri = mat4.clone(bones[temp_pid].ri);
-			// Hold inverted parent's bone's ri
-			var temp_p_inv = mat4.create();
-			mat4.invert(temp_p_inv, temp_p_ri);
-
-			// Calculate this bone's ri
-			ri = mat4.multiply(ri, temp_ri, temp_p_inv);
+			var prev_ri_inv = new THREE.Matrix4();
+			prev_ri_inv.getInverse(bones[temp_pid].ri);
+			ri.multiply(prev_ri_inv);
 			temp_pid = bones[temp_pid].pid;
 		}
+
+
 	    // R(i) = R(i-1)T*...*R(0)T*tbn
-		var temp_ri = mat4.clone(ri);
-		ri = mat4.multiply(ri, temp_ri, tbn);
+		ri.multiply(tbn);
 
 		// Create a bone, add to parent appropriately
 		new_bone = new Bone(cid, length, ti, ri, pid);
@@ -159,21 +156,19 @@ function createSkeletonFromRawBones(rawbones){
 
 function determineNHat(t_hat){
 
-	var nV = vec3.clone(t_hat);
+	var nV = t_hat.clone();
 
-	var min = Math.abs(t_hat[0]);
-	if(min > Math.abs(t_hat[1])) min = Math.abs(t_hat[1]);
-	if(min > Math.abs(t_hat[2])) min = Math.abs(t_hat[2]);
+	var min = Math.abs(t_hat.x);
+	if(min > Math.abs(t_hat.y)) min = Math.abs(t_hat.y);
+	if(min > Math.abs(t_hat.z)) min = Math.abs(t_hat.z);
 
-	nV[0] = (Math.abs(nV[0]) == min) ? 1 : 0;
-	nV[1] = (Math.abs(nV[1]) == min) ? 1 : 0;
-	nV[2] = (Math.abs(nV[2]) == min) ? 1 : 0;
+	nV.x = (Math.abs(nV.x) == min) ? 1 : 0;
+	nV.y = (Math.abs(nV.y) == min) ? 1 : 0;
+	nV.z = (Math.abs(nV.z) == min) ? 1 : 0;
 
-	var t_hat_cross_v = vec3.create();
-	vec3.cross(t_hat_cross_v, t_hat, nV);
-
-	var n_hat = vec3.create();
-	vec3.normalize(n_hat, t_hat_cross_v);
+	var n_hat = new THREE.Vector3()
+	n_hat.crossVectors(t_hat, nV);
+	n_hat.normalize();
 
 	return n_hat;
 }

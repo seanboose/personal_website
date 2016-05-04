@@ -8,41 +8,48 @@ function onBoneFileLoaded(){
 	bone_text = this.responseText;
 }
 
-function mat4XVec4(m, v){
-	var v0 = m[0]*v[0] + m[4]*v[1] + m[8]*v[2]  + m[12]*v[3];
-	var v1 = m[1]*v[0] + m[5]*v[1] + m[9]*v[2]  + m[13]*v[3];
-	var v2 = m[2]*v[0] + m[6]*v[1] + m[10]*v[2] + m[14]*v[3];
-	var v3 = m[3]*v[0] + m[7]*v[1] + m[11]*v[2] + m[15]*v[3];
+// function mat4XVec4(m, v){
+// 	var v0 = m[0]*v[0] + m[4]*v[1] + m[8]*v[2]  + m[12]*v[3];
+// 	var v1 = m[1]*v[0] + m[5]*v[1] + m[9]*v[2]  + m[13]*v[3];
+// 	var v2 = m[2]*v[0] + m[6]*v[1] + m[10]*v[2] + m[14]*v[3];
+// 	var v3 = m[3]*v[0] + m[7]*v[1] + m[11]*v[2] + m[15]*v[3];
 
-	return vec4.fromValues(v0,v1,v2,v3);
-}
+// 	// return vec4.fromValues(v0,v1,v2,v3);
+// 	return new THREE.Vector4(v0, v1, v2, v3);
+// }
 
-var first = false;
+var first = true;
 function drawBone(bone, trans){
-	var bone_geometry = new THREE.Geometry();
 
-	var p0 = mat4XVec4(trans, mat4XVec4(bone.ti, vec4.fromValues(0,0,0,1)));
-	var p1 = mat4XVec4(trans, mat4XVec4(bone.ti, mat4XVec4(bone.si, vec4.fromValues(bone.l,0,0,1))));
+	var p0 = new THREE.Vector4(0,0,0,1);
+	p0.applyMatrix4(bone.ti);
+	p0.applyMatrix4(trans);
+
+	var p1 = new THREE.Vector4(bone.l, 0, 0, 1);
+	p1.applyMatrix4(bone.si);
+	p1.applyMatrix4(bone.ti);
+	p1.applyMatrix4(trans);
+
 
 	var geom = new THREE.Geometry();
-	geom.vertices.push(new THREE.Vector3(p0[0], p0[1], p0[2]))
-	geom.vertices.push(new THREE.Vector3(p1[0], p1[1], p1[2]))
+	geom.vertices.push(new THREE.Vector3(p0.x, p0.y, p0.z))
+	geom.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z))
 
 	var line = new THREE.Line(geom, bone_material);
 	scene.add(line);
 
 	if(first){
-		console.log("id: " + bone.id);
+		console.log("DRAWING id: " + bone.id);
 		console.log(p0);
 		console.log(p1);
-		console.log(bone.ti);
-		console.log(bone.si);
 	}
 
-	var temp_trans = mat4.create();
-	var new_trans = mat4.create();
-	mat4.multiply(temp_trans, bone.ti, bone.si);
-	mat4.multiply(new_trans, trans, temp_trans);
+	var temp_trans = new THREE.Matrix4().multiplyMatrices(bone.ti, bone.si);
+	var new_trans = new THREE.Matrix4().multiplyMatrices(trans, temp_trans);
+
+	var new_trans = bone.si.clone();
+	new_trans.premultiply(bone.ti);
+	new_trans.premultiply(trans);
 
 	for(var i=0; i<bone.children.length; ++i){
 		drawBone(bone.children[i], new_trans);
@@ -53,8 +60,7 @@ function drawSkeleton(){
 
 	for(var i=0; i<skeleton.children.length; ++i){
 		if(first)console.log("drawing root bone " + i +" "+ skeleton.children.length);
-		drawBone(skeleton.children[i], mat4.create());
-		if(first)console.log("wtf i:" + i);
+		drawBone(skeleton.children[i], new THREE.Matrix4());
 	}
 	first=false;
 }
