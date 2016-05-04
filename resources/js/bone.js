@@ -14,6 +14,7 @@ class Bone {
 		this.ri = mat4.clone(ri);
 		// Deformed   rotation       from local to parent
 		this.si = mat4.clone(ri);
+		console.log(this.si);
 
 		this.ui_set = false;
 		// Undeformed transformation from local to world
@@ -21,10 +22,6 @@ class Bone {
 		// Deformed   transformation from local to world
 		this.di = mat4.create();
 
-		// this.vertices = [];
-		// this.vertices.push(vec4.create());
-		// this.vertices.push(vec4.create());
-		// this.indices = [vec2.fromValues(0,1)];
 		this.weights = [];
 
 	}
@@ -66,7 +63,7 @@ function createSkeletonFromRawBones(rawbones){
 
 
 	bones = [];
-	for(i=0; i<rawbones.length -1; ++i){
+	for(var i=0; i<rawbones.length -1; ++i){
 		bones.push(new Bone(-2, -2, mat4.create(), mat4.create(), -2));
 	}
 
@@ -78,7 +75,7 @@ function createSkeletonFromRawBones(rawbones){
 
 	var length;
 	var bone_vec;
-	var ti = mat4.create();;
+	var ti = mat4.create();
 	var ri = mat4.create();
 
 	var t_hat = vec3.create();
@@ -88,7 +85,7 @@ function createSkeletonFromRawBones(rawbones){
 	var doot;
 	var new_bone;
 
-	for(i=0; i<rawbones.length; ++i){
+	for(var i=0; i<rawbones.length; ++i){
 		child = rawbones[i];
 		cid = child.id;
 
@@ -116,46 +113,32 @@ function createSkeletonFromRawBones(rawbones){
 		// Find coord axes (in world coords)
 		vec3.normalize(t_hat, bone_vec);
 		n_hat = determineNHat(t_hat);
+		console.log("nhat");
+		console.log(n_hat);
 		vec3.cross(b_hat, t_hat, n_hat);
 
 		var tbn = mat4.create();
-		mat4[0]  = t_hat[0];
-		mat4[1]  = t_hat[1];
-		mat4[2]  = t_hat[2];
-		mat4[3]  = 0;
 
-		mat4[4]  = n_hat[0];
-		mat4[5]  = n_hat[1];
-		mat4[6]  = n_hat[2];
-		mat4[7]  = 0;
-
-		mat4[8]  = b_hat[0];
-		mat4[9]  = b_hat[1];
-		mat4[10] = b_hat[2];
-		mat4[11] = 0;
-
-		mat4[12] = 0;
-		mat4[13] = 0;
-		mat4[14] = 0;
-		mat4[15] = 1;
+		mat4.set(tbn,
+			t_hat[0], t_hat[1], t_hat[2], 0,
+			n_hat[0], n_hat[1], n_hat[2], 0,
+			b_hat[0], b_hat[1], b_hat[2], 0,
+			0,        0,        0,        1);
 
 	    // Find Ri from tbn
 	    // R(0)...R(i-1)*R(i) = tbn
 		var temp_pid = pid;
 		while(temp_pid > -1){
-
 			// Hold THIS bone's ri
 			var temp_ri = mat4.clone(ri);
-
 			// Hold parent's bone's ri
 			var temp_p_ri = mat4.clone(bones[temp_pid].ri);
-
 			// Hold inverted parent's bone's ri
-			var temp_inv = mat4.create();
-			mat4.invert(temp_inv, temp_p_ri);
+			var temp_p_inv = mat4.create();
+			mat4.invert(temp_p_inv, temp_p_ri);
 
 			// Calculate this bone's ri
-			ri = mat4.multiply(ri, temp_ri, temp_inv);
+			ri = mat4.multiply(ri, temp_ri, temp_p_inv);
 			temp_pid = bones[temp_pid].pid;
 		}
 	    // R(i) = R(i-1)T*...*R(0)T*tbn
@@ -207,7 +190,7 @@ function parseBoneFile(text){
 
 	var rawbones = [];
 
-	for(i=0; i<lines.length-1; ++i){
+	for(var i=0; i<lines.length-1; ++i){
 		// Parse an individual line
 		line = lines[i].split(" ");
 		console.log(line);

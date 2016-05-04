@@ -17,6 +17,7 @@ function mat4XVec4(m, v){
 	return vec4.fromValues(v0,v1,v2,v3);
 }
 
+var first = false;
 function drawBone(bone, trans){
 	var bone_geometry = new THREE.Geometry();
 
@@ -24,37 +25,38 @@ function drawBone(bone, trans){
 	var p1 = mat4XVec4(trans, mat4XVec4(bone.ti, mat4XVec4(bone.si, vec4.fromValues(bone.l,0,0,1))));
 
 	var geom = new THREE.Geometry();
-	// geom.vertices.push(new vec3.fromValues(p0[0], p0[1], p0[2]));
-	// geom.vertices.push(new vec3.fromValues(p1[0], p1[1], p1[2]));
-	// geom.vertices.push(new THREE.Vector3(-20, 0, 0));
 	geom.vertices.push(new THREE.Vector3(p0[0], p0[1], p0[2]))
 	geom.vertices.push(new THREE.Vector3(p1[0], p1[1], p1[2]))
-	// geom.vertices.push(new THREE.Vector3(-20, 0, 0));
 
 	var line = new THREE.Line(geom, bone_material);
 	scene.add(line);
 
-	// console.log("id: " + bone.id);
-	// console.log(p0);
-	// console.log(p1);
+	if(first){
+		console.log("id: " + bone.id);
+		console.log(p0);
+		console.log(p1);
+		console.log(bone.ti);
+		console.log(bone.si);
+	}
 
 	var temp_trans = mat4.create();
 	var new_trans = mat4.create();
 	mat4.multiply(temp_trans, bone.ti, bone.si);
 	mat4.multiply(new_trans, trans, temp_trans);
 
-	for(i=0; i<bone.children.length; ++i){
+	for(var i=0; i<bone.children.length; ++i){
 		drawBone(bone.children[i], new_trans);
 	}
 }
 
 function drawSkeleton(){
 
-	for(i=0; i<skeleton.children.length; ++i){
-		var bone = skeleton.children[i];
-		var current_trans = mat4.create();
-		drawBone(bone, current_trans);
+	for(var i=0; i<skeleton.children.length; ++i){
+		if(first)console.log("drawing root bone " + i +" "+ skeleton.children.length);
+		drawBone(skeleton.children[i], mat4.create());
+		if(first)console.log("wtf i:" + i);
 	}
+	first=false;
 }
 
 function init(){
@@ -93,9 +95,6 @@ function init(){
     geometry.vertices.push(new THREE.Vector3(-10, 0, 0));
     geometry.vertices.push(new THREE.Vector3(0, 10, 0));
     geometry.vertices.push(new THREE.Vector3(10, 0, 0));
-    // geometry.vertices.push(vec3.fromValues(-10,0,0));
-    // geometry.vertices.push(vec3.fromValues(0,10,0));
-    // geometry.vertices.push(vec3.fromValues(10,0,0));
  	var line = new THREE.Line(geometry, material);
 	scene.add(line)
 
