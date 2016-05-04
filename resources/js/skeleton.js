@@ -18,7 +18,7 @@ function onBoneFileLoaded(){
 // 	return new THREE.Vector4(v0, v1, v2, v3);
 // }
 
-var first = true;
+var first = false;
 function drawBone(bone, trans){
 
 	var p0 = new THREE.Vector4(0,0,0,1);

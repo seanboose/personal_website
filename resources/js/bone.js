@@ -67,25 +67,27 @@ function createSkeletonFromRawBones(rawbones){
 		bones.push(new Bone(-2, -2, new THREE.Matrix4(), new THREE.Matrix4(), -2));
 	}
 
-	var cid;
-	var pid;
-	var dx;
-	var dy;
-	var dz;
-
-	var length;
-	var bone_vec;
-	var ti = new THREE.Matrix4();
-	var ri = new THREE.Matrix4();
-
-	var t_hat = new THREE.Vector3();
-	var n_hat = new THREE.Vector3();
-	var b_hat = new THREE.Vector3();
-
 	var doot;
-	var new_bone;
 
 	for(var i=0; i<rawbones.length; ++i){
+		var cid;
+		var pid;
+		var dx;
+		var dy;
+		var dz;
+
+		var length;
+		var bone_vec;
+		var ti = new THREE.Matrix4();
+		var ri = new THREE.Matrix4();
+
+		var t_hat = new THREE.Vector3();
+		var n_hat = new THREE.Vector3();
+		var b_hat = new THREE.Vector3();
+
+		var new_bone;
+
+
 		child = rawbones[i];
 		cid = child.id;
 
@@ -147,6 +149,9 @@ function createSkeletonFromRawBones(rawbones){
 		bones[cid] = new_bone;
 		if(pid == -1) doot.children.push(new_bone);
 		else bones[pid].children.push(new_bone);
+
+		console.log("BONE ID:" + cid);
+		console.log(ri);
 	}
 
 	doot.bone_vector = bones;
