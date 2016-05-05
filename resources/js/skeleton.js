@@ -29,11 +29,9 @@ var selected_id = -2;
 
 var mousedown = false;
 document.body.onmousedown = function() {
-	console.log("mouse down!");
 	mousedown = true;
 }
 document.body.onmouseup = function() {
-	console.log("mouse up!");
  	mousedown = false;
 }
 
@@ -44,6 +42,13 @@ var last_mouse = new THREE.Vector2();
 
 document.onmousemove = handleMouseMove;
 function handleMouseMove(event) {
+
+	for(var i = 0; i < skeleton.bone_objects.children.length; ++i){
+		skeleton.bone_objects.children[i].geometry.verticesNeedUpdate = true;
+
+		// console.log(skeleton.bone_objects.children[i].geometry.vertices);
+		// console.log(skeleton.bone_vector[i].geom.vertices);
+	}
 
 
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -103,7 +108,11 @@ function drawBone(bone, trans){
 	var verts = [p0v, p1v];
 	bone.geom.vertices = verts;
 	bone.geom.verticesNeedUpdate = true;
+	bone.geom.boundingSphere = null;
+	bone.geom.boundingBox = null;
 	bone.line.geometry = bone.geom;
+	// bone.line.geometry = verts;
+	// bone.line.geometry.verticesNeedUpdate = true;
 	if(bone.line.id == selected_id) bone.line.material = selected_material;
 	else bone.line.material = bone_material;
 	bone.line.material.needsUpdate = true;
