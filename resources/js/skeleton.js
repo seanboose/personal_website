@@ -90,7 +90,6 @@ function onBoneFileLoaded(){
 }
 
 
-var first = false;
 function drawBone(bone, trans){
 
 	var p0 = new THREE.Vector4(0,0,0,1);
@@ -111,19 +110,9 @@ function drawBone(bone, trans){
 	bone.geom.boundingSphere = null;
 	bone.geom.boundingBox = null;
 	bone.line.geometry = bone.geom;
-	// bone.line.geometry = verts;
-	// bone.line.geometry.verticesNeedUpdate = true;
 	if(bone.line.id == selected_id) bone.line.material = selected_material;
 	else bone.line.material = bone_material;
 	bone.line.material.needsUpdate = true;
-
-	// scene.add(bone.line);
-
-	if(first){
-		console.log("DRAWING id: " + bone.id);
-		console.log(p0);
-		console.log(p1);
-	}
 
 	var temp_trans = new THREE.Matrix4().multiplyMatrices(bone.ti, bone.si);
 	var new_trans = new THREE.Matrix4().multiplyMatrices(trans, temp_trans);
@@ -141,19 +130,9 @@ function drawSkeleton(){
 
 	// Draw bones!
 	for(var i=0; i<skeleton.children.length; ++i){
-		if(first)console.log("drawing root bone " + i +" "+ skeleton.children.length);
 		drawBone(skeleton.children[i], new THREE.Matrix4());
 	}
-	first=false;
 }
-
-// function clearScene(){
-
-// 	for( var i = scene.children.length - 1; i >= 0; i--) {
-// 		var obj = scene.children[i];
-// 		scene.remove(obj);
-// 	}
-// }
 
 function init(){
 	console.log("Initializing WebGl/three.js stuff...");
@@ -192,8 +171,15 @@ function init(){
 	console.log("Returned bones length: " + rawbones.length);
 	skeleton = createSkeletonFromRawBones(rawbones);
 	scene.add(skeleton.bone_objects);
-
 	console.log("Created skeleton?");
+
+	console.log("Loading ogre obj...");
+	var loader = new THREE.OBJLoader();
+	loader.load("resources/ogre-files/ogre.obj",
+		function(object){
+			scene.add(object);
+		}
+	);
 
 	render();
 
