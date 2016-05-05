@@ -7,6 +7,7 @@ class Bone {
 		this.pid = pid;
 		this.l = l;
 		this.children = [];
+		this.line_id = -2;
 
 		// Undeformed translation    from local to parent
 		this.ti = ti.clone();
