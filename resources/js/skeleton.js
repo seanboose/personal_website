@@ -24,11 +24,6 @@ camera.position.set(0,0,camera_distance);
 camera.lookAt(look);
 
 
-var last_x = 0;
-var last_y = 0;
-var current_x = 0;
-var current_y = 0;
-var mouse_ray = new THREE.Vector3();
 var kCylinderRadius = 0.05;
 var selected_id = -2;
 
@@ -40,10 +35,10 @@ document.body.onmouseup = function() {
   mousedown = false;
 }
 
-
 var raycaster = new THREE.Raycaster();
-raycaster.linePrecision = 3;
+raycaster.linePrecision = .05;
 var mouse = new THREE.Vector2();
+
 document.onmousemove = handleMouseMove;
 function handleMouseMove(event) {
 
