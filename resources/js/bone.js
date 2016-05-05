@@ -24,6 +24,9 @@ class Bone {
 
 		this.weights = [];
 
+		this.geom = new THREE.Geometry();
+		this.line = new THREE.Line();
+
 	}
 }
 

@@ -172,23 +172,13 @@ function drawBone(bone, trans){
 	p1.applyMatrix4(bone.ti);
 	p1.applyMatrix4(trans);
 
+	var verts = [p0, p1];
+	bone.geom.vertices = verts;
+	bone.geom.verticesNeedUpdate = true;
+	bone.line.geometry = bone.geom;
+	bone.line.material = bone_material;
 
-	var geom = new THREE.Geometry();
-	geom.vertices.push(new THREE.Vector3(p0.x, p0.y, p0.z))
-	geom.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z))
-
-
-	var line;
-	if(bone.id == selected_id){
-		line = new THREE.Line(geom, selected_material);
-	}
-	else {
-		line = new THREE.Line(geom, bone_material);
-	}
-	scene.add(line);
-
-	bone.line_id = line.id;
-	console.log("line_id: " + bone.line_id);
+	scene.add(bone.line);
 
 	if(first){
 		console.log("DRAWING id: " + bone.id);
