@@ -28,11 +28,13 @@ var kCylinderRadius = 0.05;
 var selected_id = -2;
 
 var mousedown = false;
-document.body.onmousedown = function() { 
-  mousedown = true;
+document.body.onmousedown = function() {
+	console.log("mouse down!");
+	mousedown = true;
 }
 document.body.onmouseup = function() {
-  mousedown = false;
+	console.log("mouse up!");
+ 	mousedown = false;
 }
 
 var raycaster = new THREE.Raycaster();
@@ -47,34 +49,31 @@ function handleMouseMove(event) {
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
 
-	raycaster.setFromCamera(mouse, camera);
-	// var intersects = raycaster.intersectObjects(scene.children);
-	var intersects = raycaster.intersectObjects(skeleton.bone_objects.children);
-	if(intersects.length > 0)
-		selected_id = intersects[0].object.id;
-	else
-		selected_id = -2;
-
-
-
 	var delta_x = mouse.x - last_mouse.x;
 	var delta_y = mouse.y - last_mouse.y;
+
 	if(Math.sqrt(delta_x * delta_x + delta_y * delta_y) < 1e-15) return;
 	
-	var mouse_direction = new THREE.Vector3(delta_x, delta_y, 0);
 	if(mousedown){
-		var axis_vector = new THREE.Vector3(0, mouse_direction.x, -mouse_direction.y);
-		var axis = new THREE.Vector3().multiplyVectors(orientation, axis_vector);
-		axis.normalize();
-		var rotation = new THREE.Matrix4().makeRotationAxis(axis, rotation_speed);
 		if(selected_id != -2){
-			for(var i=0; i<skeleton.children.length; ++i){
-				if(skeleton.children[i].line.id == selected_id){
-					skeleton.children[i].si.multiply(rotation);
+			var axis = new THREE.Vector3(0, delta_x, delta_y).applyMatrix3(orientation);
+			axis.normalize();
+			var rotation = new THREE.Matrix4().makeRotationAxis(axis, rotation_speed);
+			for(var i=0; i<skeleton.bone_vector.length; ++i){
+				if(skeleton.bone_vector[i].line.id == selected_id){
+					skeleton.bone_vector[i].si.multiply(rotation);
 				}
 			}
-			// selected_bone.si = selected_bone.si.multiply(rotation);
 		}
+	}
+	else {
+		raycaster.setFromCamera(mouse, camera);
+		var intersects = raycaster.intersectObjects(skeleton.bone_objects.children);
+		if(intersects.length > 0)
+			selected_id = intersects[0].object.id;
+		else
+			selected_id = -2;
+
 	}
 
 	last_mouse.x = mouse.x;
