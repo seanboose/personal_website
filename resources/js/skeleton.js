@@ -38,6 +38,7 @@ document.body.onmouseup = function() {
 var raycaster = new THREE.Raycaster();
 raycaster.linePrecision = .05;
 var mouse = new THREE.Vector2();
+var last_mouse = new THREE.Vector2();
 
 document.onmousemove = handleMouseMove;
 function handleMouseMove(event) {
@@ -47,9 +48,37 @@ function handleMouseMove(event) {
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
 
 	raycaster.setFromCamera(mouse, camera);
-	console.log(scene.children.length);
-	var intersects = raycaster.intersectObjects(scene.children);
-	selected_id = intersects[0].object.id;
+	// var intersects = raycaster.intersectObjects(scene.children);
+	var intersects = raycaster.intersectObjects(skeleton.bone_objects.children);
+	if(intersects.length > 0)
+		selected_id = intersects[0].object.id;
+	else
+		selected_id = -2;
+
+
+
+	var delta_x = mouse.x - last_mouse.x;
+	var delta_y = mouse.y - last_mouse.y;
+	if(Math.sqrt(delta_x * delta_x + delta_y * delta_y) < 1e-15) return;
+	
+	var mouse_direction = new THREE.Vector3(delta_x, delta_y, 0);
+	if(mousedown){
+		var axis_vector = new THREE.Vector3(0, mouse_direction.x, -mouse_direction.y);
+		var axis = new THREE.Vector3().multiplyVectors(orientation, axis_vector);
+		axis.normalize();
+		var rotation = new THREE.Matrix4().makeRotationAxis(axis, rotation_speed);
+		if(selected_id != -2){
+			for(var i=0; i<skeleton.children.length; ++i){
+				if(skeleton.children[i].line.id == selected_id){
+					skeleton.children[i].si.multiply(rotation);
+				}
+			}
+			// selected_bone.si = selected_bone.si.multiply(rotation);
+		}
+	}
+
+	last_mouse.x = mouse.x;
+	last_mouse.y = mouse.y;
 }
 
 function onBoneFileLoaded(){
@@ -76,11 +105,11 @@ function drawBone(bone, trans){
 	bone.geom.vertices = verts;
 	bone.geom.verticesNeedUpdate = true;
 	bone.line.geometry = bone.geom;
-	console.log(bone.line.id +" "+ selected_id);
 	if(bone.line.id == selected_id) bone.line.material = selected_material;
 	else bone.line.material = bone_material;
+	bone.line.material.needsUpdate = true;
 
-	scene.add(bone.line);
+	// scene.add(bone.line);
 
 	if(first){
 		console.log("DRAWING id: " + bone.id);
@@ -142,16 +171,6 @@ function init(){
 	var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
 	scene.add(skybox);
 
-    var material = new THREE.LineBasicMaterial({
-        color: 0x0000ff
-    });
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push(new THREE.Vector3(-10, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(0, 10, 0));
-    geometry.vertices.push(new THREE.Vector3(10, 0, 0));
- 	var line = new THREE.Line(geometry, material);
-	scene.add(line)
-
 	console.log("Loading bone file...");
 	var xml_request = new XMLHttpRequest();
 	var bone_address = "resources/ogre-files/ogre-skeleton.bf";
@@ -164,6 +183,7 @@ function init(){
 	var rawbones = parseBoneFile(bone_text);
 	console.log("Returned bones length: " + rawbones.length);
 	skeleton = createSkeletonFromRawBones(rawbones);
+	scene.add(skeleton.bone_objects);
 
 	console.log("Created skeleton?");
 

@@ -59,6 +59,8 @@ class Skeleton {
 		// this.root = vec3.fromValues(x,y,z);
 		this.root = new THREE.Vector3(x,y,z);
 
+		this.bone_objects = new THREE.Object3D();
+
 	}
 }
 
@@ -150,6 +152,7 @@ function createSkeletonFromRawBones(rawbones){
 
 		// Create a bone, add to parent appropriately
 		new_bone = new Bone(cid, length, ti, ri, pid);
+		doot.bone_objects.add(new_bone.line);
 		bones[cid] = new_bone;
 		if(pid == -1) doot.children.push(new_bone);
 		else bones[pid].children.push(new_bone);
