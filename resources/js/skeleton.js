@@ -40,125 +40,138 @@ document.body.onmouseup = function() {
   mousedown = false;
 }
 
+
+var raycaster = new THREE.Raycaster();
+raycaster.linePrecision = 3;
+var mouse = new THREE.Vector2();
 document.onmousemove = handleMouseMove;
 function handleMouseMove(event) {
 
-	last_x = current_x;
-	last_y = current_y;
-	current_x = event.pageX;
-	current_y = event.pageY;
 
-	var delta_x = current_x - last_x;
-	var delta_y = current_y - last_y;
-	if(Math.sqrt(delta_x * delta_x + delta_y * delta_y) < 1e-15) return;
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
 
-	var mouse_direction = new THREE.Vector3(delta_x, delta_y, 0);
-	var mouse_start = new THREE.Vector2(last_x, last_y);
-	var mouse_end = new THREE.Vector2(current_x, current_y);
+	raycaster.setFromCamera(mouse, camera);
+	console.log(scene.children.length);
+	var intersects = raycaster.intersectObjects(scene.children);
+	selected_id = intersects[0].object.id;
 
-	var viewport = new THREE.Vector4(0,0, window.innerWidth, window.innerHeight);
+	// last_x = current_x;
+	// last_y = current_y;
+	// current_x = event.pageX;
+	// current_y = event.pageY;
 
-	if(mousedown){
-		var axis_vector = new THREE.Vector3(0, mouse_directon.x, -mouse_directon.y);
-		var axis = new THREE.Vector3().multiplyVectors(orientation, axis_vector);
-		axis.normalize();
+	// var delta_x = current_x - last_x;
+	// var delta_y = current_y - last_y;
+	// if(Math.sqrt(delta_x * delta_x + delta_y * delta_y) < 1e-15) return;
 
-		var rotation = new THREE.Matrix4().makeRotationAxis(axis, rotation_speed);
+	// var mouse_direction = new THREE.Vector3(delta_x, delta_y, 0);
+	// var mouse_start = new THREE.Vector2(last_x, last_y);
+	// var mouse_end = new THREE.Vector2(current_x, current_y);
 
-		if(selected_bone != null){
-			selected_bone.si = selected_bone.si.multiply(rotation);
-		}
-	}
-	else {
-		var x =  2 * current_x / window.innerWidth - 1;
-		var y = -2 * current_y / window.innerHeight + 1;
-		var z = -1;
+	// var viewport = new THREE.Vector4(0,0, window.innerWidth, window.innerHeight);
 
-		console.log("x: " + x);
-		console.log("y: " + y)
-		mouse_ray = new THREE.Vector3(x, y, z);
-		mouse_ray.unproject(camera);
-		mouse_ray.normalize();
+	// if(mousedown){
+	// 	var axis_vector = new THREE.Vector3(0, mouse_directon.x, -mouse_directon.y);
+	// 	var axis = new THREE.Vector3().multiplyVectors(orientation, axis_vector);
+	// 	axis.normalize();
 
-		console.log(mouse_ray);
+	// 	var rotation = new THREE.Matrix4().makeRotationAxis(axis, rotation_speed);
 
-		// Draw the ray
-		var p0 = mouse_ray.clone();
-		var p1 = mouse_ray.clone().multiplyScalar(1000);
-		var geom = new THREE.Geometry();
-		geom.vertices.push(p0);
-		geom.vertices.push(p1);
-		var line = new THREE.Line(geom, bone_material);
-		scene.add(line);
-	}
+	// 	if(selected_bone != null){
+	// 		selected_bone.si = selected_bone.si.multiply(rotation);
+	// 	}
+	// }
+	// else {
+	// 	var x =  2 * current_x / window.innerWidth - 1;
+	// 	var y = -2 * current_y / window.innerHeight + 1;
+	// 	var z = -1;
+
+	// 	console.log("x: " + x);
+	// 	console.log("y: " + y)
+	// 	mouse_ray = new THREE.Vector3(x, y, z);
+	// 	mouse_ray.unproject(camera);
+	// 	mouse_ray.normalize();
+
+	// 	console.log(mouse_ray);
+
+	// 	// Draw the ray
+	// 	var p0 = mouse_ray.clone();
+	// 	var p1 = mouse_ray.clone().multiplyScalar(1000);
+	// 	var geom = new THREE.Geometry();
+	// 	geom.vertices.push(p0);
+	// 	geom.vertices.push(p1);
+	// 	var line = new THREE.Line(geom, bone_material);
+	// 	scene.add(line);
+	// }
 }
 
 function onBoneFileLoaded(){
 	bone_text = this.responseText;
 }
 
-var first_select = true;
-function selectBone(bone, trans){
-	var dist = Number.MAX_VALUE;
+// var first_select = true;
+// function selectBone(bone, trans){
+// 	var dist = Number.MAX_VALUE;
 
-	var p0 = new THREE.Vector4(0,0,0,1);
-	p0.applyMatrix4(bone.ti);
-	p0.applyMatrix4(trans);
+// 	var p0 = new THREE.Vector4(0,0,0,1);
+// 	p0.applyMatrix4(bone.ti);
+// 	p0.applyMatrix4(trans);
 
-	var p1 = new THREE.Vector4(bone.l, 0, 0, 1);
-	p1.applyMatrix4(bone.si);
-	p1.applyMatrix4(bone.ti);
-	p1.applyMatrix4(trans);
+// 	var p1 = new THREE.Vector4(bone.l, 0, 0, 1);
+// 	p1.applyMatrix4(bone.si);
+// 	p1.applyMatrix4(bone.ti);
+// 	p1.applyMatrix4(trans);
 
-	var bone_pos = new THREE.Vector3(p0.x, p0.y, p0.z);
-	var bone_ray = new THREE.Vector3(p1.x, p1.y, p1.z)
-	bone_ray.sub(bone_pos);
+// 	var bone_pos = new THREE.Vector3(p0.x, p0.y, p0.z);
+// 	var bone_ray = new THREE.Vector3(p1.x, p1.y, p1.z)
+// 	bone_ray.sub(bone_pos);
 
-	var w0 = eye.clone().sub(bone_pos);
+// 	var w0 = eye.clone().sub(bone_pos);
 
-	var a = mouse_ray.dot(mouse_ray);
-	var b = mouse_ray.dot(bone_ray);
-	var c = bone_ray.dot(bone_ray);
-	var d = mouse_ray.dot(w0);
-	var e = bone_ray.dot(w0);
+// 	var a = mouse_ray.dot(mouse_ray);
+// 	var b = mouse_ray.dot(bone_ray);
+// 	var c = bone_ray.dot(bone_ray);
+// 	var d = mouse_ray.dot(w0);
+// 	var e = bone_ray.dot(w0);
 
-	var denom = a*c - b*b;
-	var sc = (b*e - c*d) / denom;
-	var tc = (a*e - b*d) / denom;
+// 	var denom = a*c - b*b;
+// 	var sc = (b*e - c*d) / denom;
+// 	var tc = (a*e - b*d) / denom;
 
-	var mouse_closest = eye.clone().add(mouse_ray.clone().multiplyScalar(sc));
-	var bone_closest = bone_pos.clone().add(bone_ray.clone().multiplyScalar(tc));
-	var shortest_vec = mouse_closest.clone().sub(bone_closest);
+// 	var mouse_closest = eye.clone().add(mouse_ray.clone().multiplyScalar(sc));
+// 	var bone_closest = bone_pos.clone().add(bone_ray.clone().multiplyScalar(tc));
+// 	var shortest_vec = mouse_closest.clone().sub(bone_closest);
 
-	var delta = shortest_vec.length();
+// 	var delta = shortest_vec.length();
 
-	if(delta < kCylinderRadius){
-		var mouse_segment = mouse_closest.clone().sub(bone_pos);
+// 	if(delta < kCylinderRadius){
+// 		var mouse_segment = mouse_closest.clone().sub(bone_pos);
 
-		var mouse_comp = mouse_segment.dot(bone_ray.clone().normalize());
-		var bone_comp = bone_ray.length();
+// 		var mouse_comp = mouse_segment.dot(bone_ray.clone().normalize());
+// 		var bone_comp = bone_ray.length();
 
-		if(mouse_comp * bone_comp >= 0 && mouse_comp < bone.l){
-			// BONE IS BEING AIMED AT!
-			dist = sc;
-		}
-	}
+// 		if(mouse_comp * bone_comp >= 0 && mouse_comp < bone.l){
+// 			// BONE IS BEING AIMED AT!
+// 			dist = sc;
+// 		}
+// 	}
 
-	var new_t = trans.clone().multiply(bone.ti).multiply(bone.si);
-	var child_dist = Number.MAX_VALUE;
+// 	var new_t = trans.clone().multiply(bone.ti).multiply(bone.si);
+// 	var child_dist = Number.MAX_VALUE;
 
-	for(var i=0; i<bone.children.length; ++i){
-		child_dist = selectBone(bone.children[i], new_t);
-	}
+// 	for(var i=0; i<bone.children.length; ++i){
+// 		child_dist = selectBone(bone.children[i], new_t);
+// 	}
 
-	if(dist < Number.MAX_VALUE && dist < child_dist) {
-		selected_id = bone.id;
-		// console.log("CHOSE A BONE, id:" + selected_id + " dist: " + dist);
-	}
+// 	if(dist < Number.MAX_VALUE && dist < child_dist) {
+// 		selected_id = bone.id;
+// 		// console.log("CHOSE A BONE, id:" + selected_id + " dist: " + dist);
+// 	}
 
-	return dist;
+// 	return dist;
 
-}
+// }
 
 var first = false;
 function drawBone(bone, trans){
@@ -172,11 +185,16 @@ function drawBone(bone, trans){
 	p1.applyMatrix4(bone.ti);
 	p1.applyMatrix4(trans);
 
-	var verts = [p0, p1];
+	var p0v = new THREE.Vector3(p0.x, p0.y, p0.z);
+	var p1v = new THREE.Vector3(p1.x, p1.y, p1.z);
+
+	var verts = [p0v, p1v];
 	bone.geom.vertices = verts;
 	bone.geom.verticesNeedUpdate = true;
 	bone.line.geometry = bone.geom;
-	bone.line.material = bone_material;
+	console.log(bone.line.id +" "+ selected_id);
+	if(bone.line.id == selected_id) bone.line.material = selected_material;
+	else bone.line.material = bone_material;
 
 	scene.add(bone.line);
 
@@ -201,10 +219,10 @@ function drawBone(bone, trans){
 function drawSkeleton(){
 
 	// See if mouse is pointed at a bone
-	for(var i=0; i<skeleton.children.length; ++i){
-		selectBone(skeleton.children[i], new THREE.Matrix4());
-	}
-	first_select = false;
+	// for(var i=0; i<skeleton.children.length; ++i){
+	// 	selectBone(skeleton.children[i], new THREE.Matrix4());
+	// }
+	// first_select = false;
 
 	// Draw bones!
 	for(var i=0; i<skeleton.children.length; ++i){
@@ -276,9 +294,18 @@ function init(){
 	
 
 	function render(){
-		selected_bone = -2;
-		eye = look.clone().multiplyScalar(camera_distance).add(center);
+		// selected_bone = -2;
+		// eye = look.clone().multiplyScalar(camera_distance).add(center);
+
+		// raycaster.setFromCamera(mouse, camera);
+		// console.log(scene.children.length);
+		// var intersects = raycaster.intersectObjects(scene.children);
+		// for(var i=0; i < intersects.length; ++i){
+		// 	console.log("intersect");
+		// 	intersects[i].object.material.color.set(0xffffff);
+		// }
 		drawSkeleton();
+
 		// cube.rotation.y -= clock.getDelta();
 
 		renderer.render(scene, camera);
@@ -286,8 +313,8 @@ function init(){
 
 		// TODO: Might be able to remove both of these when done
 		// Might not.
-		clearScene();
-		scene.add(skybox);
+		// clearScene();
+		// scene.add(skybox);
 
 	}
 }
