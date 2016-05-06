@@ -310,30 +310,3 @@ function parseBoneFile(text){
 
 	return rawbones;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

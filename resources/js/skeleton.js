@@ -42,14 +42,14 @@ document.onkeypress = function (e) {
     e = e || window.event;
 
     // Rotate bones with left/right
-    if(selected_id != -2 && mousedown){
-    	if(e.keyCode == 37 || e.keyCode == 39){
+	if(e.keyCode == 37 || e.keyCode == 39){
+	    if(selected_id != -2 && mousedown){
     		var rot_dir = 1;
     		if(e.keyCode == 39) rot_dir = -1;
     		var rot_axis = new THREE.Vector3(-1, 0, 0);
     		var rot_matrix = new THREE.Matrix4().makeRotationAxis(rot_axis, rot_dir * rotation_speed);
 
-    		// Find the right bone
+    		// Find the correct bone
     		var rot_bone;
     		for(var i=0; i<skeleton.bone_vector.length; ++i){
     			if(skeleton.bone_vector[i].line.id == selected_id){
@@ -350,6 +350,5 @@ function init(){
 		requestAnimationFrame(render);
 	}
 }
-
 
 init();
