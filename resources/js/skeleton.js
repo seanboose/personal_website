@@ -238,7 +238,7 @@ function init(){
 	scene.add(skeleton.bone_objects);
 	console.log("Skeleton complete.");
 
-	parseWeightsFile(bone_text, skeleton);
+	parseWeightsFile(weight_text, skeleton);
 
 
 	// Load ogre, extract the mesh from weird obj object hierarchy bullshit

@@ -261,6 +261,34 @@ function determineNHat(t_hat){
 }
 
 function parseWeightsFile(text, doot){
+	console.log("Parsing weights file...");
+
+	var line_num = 0;
+	var lines = text.split("\n");
+
+	var first_line = lines[0].split(" ");
+	console.log(first_line);
+	var num_bones = parseInt(first_line[0]);
+	var num_verts = parseInt(first_line[1]);
+	var bone_num = 0;
+	var vert_num = 0;
+
+	for(var i=1; i < lines.length-1; ++i){
+		doot.bone_vector[bone_num].weights.push(parseFloat(lines[i]));
+		++vert_num;
+		if(vert_num == num_verts){
+			console.log("Bone " + bone_num +" finished.");
+			console.log("i: " + i + ", length: " + lines.length);
+			vert_num = 0;
+			++bone_num;
+		}
+	}
+
+	console.log("Parsed weights file.");
+	console.log("Current vert: " + vert_num);
+	console.log("Total verts:  " + num_verts);
+	console.log("Current bone: " +bone_num);
+	console.log("Total bones:  " + num_bones);
 }
 
 
