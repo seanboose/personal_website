@@ -173,18 +173,36 @@ function init(){
 	scene.add(skeleton.bone_objects);
 	console.log("Created skeleton?");
 
+	// Load ogre, extract the mesh from weird obj object hierarchy bullshit
+	var ogre;
+	var ogre_loaded = false;
 	console.log("Loading ogre obj...");
 	var loader = new THREE.OBJLoader();
-	loader.load("resources/ogre-files/ogre.obj",
-		function(object){
-			scene.add(object);
+	loader.load( 'resources/ogre-files/ogre.obj', function ( object ) {
+		var material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
+		console.log(material.opacity);
+		object.traverse( function ( child ) {
+		if ( child instanceof THREE.Mesh ) {
+			ogre = child;
+			ogre_loaded = true;
+			ogre.material = material;
+			ogre.material.opacity = .5;
+			ogre.material.transparent = true;
+			scene.add(ogre);
+			console.log("Ogre loaded.");
 		}
-	);
+		});
+	});
+
 
 	render();
 
 	function render(){
 		drawSkeleton();
+
+		if(ogre_loaded){
+			// Do ogre thangs
+		}
 
 		renderer.render(scene, camera);
 		requestAnimationFrame(render);
