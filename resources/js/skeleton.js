@@ -130,7 +130,7 @@ function drawPrism(bone, trans){
 		axis_0.applyMatrix4(trans);
 		axis_1.applyMatrix4(trans);
 		axis_0_verts.push(new THREE.Vector3(axis_0.x, axis_0.y, axis_0.z));
-		axis_1_verts.push(new THREE.Vector3(axis_1.x, axis_0.y, axis_0.z));
+		axis_1_verts.push(new THREE.Vector3(axis_1.x, axis_1.y, axis_1.z));
 	}
 	prism.axes_geom_0.vertices = axis_0_verts;
 	prism.axes_geom_1.vertices = axis_1_verts;

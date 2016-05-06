@@ -35,10 +35,10 @@ class Prism {
 		}
 
 
-		this.axes_vert_0 = [new THREE.Vector3(0,  0,  0),
-							new THREE.Vector3(0, .1,  0)];
-		this.axes_vert_1 = [new THREE.Vector3(0,  0,  0),
-							new THREE.Vector3(0,  0, .1)];
+		this.axes_vert_0 = [new THREE.Vector4(0,  0,  0, 1),
+							new THREE.Vector4(0, .1,  0, 1)];
+		this.axes_vert_1 = [new THREE.Vector4(0,  0,  0, 1),
+							new THREE.Vector4(0,  0, .1, 1)];
 		this.axes_geom_0 = new THREE.Geometry();
 		this.axes_geom_1 = new THREE.Geometry();
 		this.axes_line_0 = new THREE.Line();
