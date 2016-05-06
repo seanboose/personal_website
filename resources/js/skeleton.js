@@ -1,4 +1,5 @@
 var bone_text;
+var weight_text;
 var skeleton = new Skeleton(0,0,0);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 var scene = new THREE.Scene;
@@ -26,6 +27,8 @@ camera.lookAt(look);
 
 var kCylinderRadius = 0.05;
 var selected_id = -2;
+var prism = new Prism(kCylinderRadius);
+prism.addLinesToScene(scene);
 
 var mousedown = false;
 document.body.onmousedown = function() {
@@ -42,14 +45,6 @@ var last_mouse = new THREE.Vector2();
 
 document.onmousemove = handleMouseMove;
 function handleMouseMove(event) {
-
-	for(var i = 0; i < skeleton.bone_objects.children.length; ++i){
-		skeleton.bone_objects.children[i].geometry.verticesNeedUpdate = true;
-
-		// console.log(skeleton.bone_objects.children[i].geometry.vertices);
-		// console.log(skeleton.bone_vector[i].geom.vertices);
-	}
-
 
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
@@ -74,10 +69,14 @@ function handleMouseMove(event) {
 	else {
 		raycaster.setFromCamera(mouse, camera);
 		var intersects = raycaster.intersectObjects(skeleton.bone_objects.children);
-		if(intersects.length > 0)
+		if(intersects.length > 0) {
 			selected_id = intersects[0].object.id;
-		else
+			prism.setVisible(true);
+		}
+		else {
 			selected_id = -2;
+			prism.setVisible(false);
+		}
 
 	}
 
@@ -87,6 +86,42 @@ function handleMouseMove(event) {
 
 function onBoneFileLoaded(){
 	bone_text = this.responseText;
+}
+function onWeightFileLoaded(){
+	weight_text = this.responseText;
+}
+
+function drawPrism(bone, trans){
+
+	var disk_0_verts = [];
+	var disk_1_verts = [];
+
+	for(var i=0; i<prism.disk_verts.length; ++i){
+		var vert0 = prism.disk_verts[i].clone();
+		vert0.applyMatrix4(trans);
+		disk_0_verts.push(new THREE.Vector3(vert0.x, vert0.y, vert0.z));
+
+		var vert1 = prism.disk_verts[i].clone();
+		vert1.x = vert1.x + bone.l;
+		vert1.applyMatrix4(trans);
+		disk_1_verts.push(new THREE.Vector3(vert1.x, vert1.y, vert1.z));
+
+		if(i < prism.wall_line.length){
+			prism.wall_geom[i].vertices = [new THREE.Vector3(vert0.x, vert0.y, vert0.z),
+										   new THREE.Vector3(vert1.x, vert1.y, vert1.z)];
+			prism.wall_geom[i].verticesNeedUpdate = true;
+			prism.wall_line[i].geometry = prism.wall_geom[i];
+		}
+	}
+
+	prism.disk_geom[0].vertices = disk_0_verts;
+	prism.disk_geom[1].vertices = disk_1_verts;
+	prism.disk_geom[0].verticesNeedUpdate = true;
+	prism.disk_geom[1].verticesNeedUpdate = true;
+	prism.disk_line[0].geometry = prism.disk_geom[0];
+	prism.disk_line[1].geometry = prism.disk_geom[1];
+
+
 }
 
 
@@ -110,8 +145,14 @@ function drawBone(bone, trans){
 	bone.geom.boundingSphere = null;
 	bone.geom.boundingBox = null;
 	bone.line.geometry = bone.geom;
-	if(bone.line.id == selected_id) bone.line.material = selected_material;
-	else bone.line.material = bone_material;
+	if(bone.line.id == selected_id) {
+		prism.objects.visible = true;
+		drawPrism(bone, trans.clone().multiply(bone.ti).multiply(bone.si));
+		bone.line.material = selected_material;
+	}
+	else {
+		bone.line.material = bone_material;
+	}
 	bone.line.material.needsUpdate = true;
 
 	var temp_trans = new THREE.Matrix4().multiplyMatrices(bone.ti, bone.si);
@@ -159,19 +200,29 @@ function init(){
 	scene.add(skybox);
 
 	console.log("Loading bone file...");
-	var xml_request = new XMLHttpRequest();
+	var bone_request = new XMLHttpRequest();
 	var bone_address = "resources/ogre-files/ogre-skeleton.bf";
-	rawbones
-	xml_request.addEventListener("load", onBoneFileLoaded);
-	xml_request.open("GET", bone_address, false);
-	xml_request.send();
+	bone_request.addEventListener("load", onBoneFileLoaded);
+	bone_request.open("GET", bone_address, false);
+	bone_request.send();
 	console.log("Bone file loaded.");
+
+	console.log("Loading weights file...");
+	var weights_address = "resources/ogre-files/ogre-weights.dmat";
+	var weights_request = new XMLHttpRequest();
+	weights_request.addEventListener("load", onWeightFileLoaded);
+	weights_request.open("GET", weights_address, false);
+	weights_request.send();
+	console.log("Weights file loaded.");	
 
 	var rawbones = parseBoneFile(bone_text);
 	console.log("Returned bones length: " + rawbones.length);
 	skeleton = createSkeletonFromRawBones(rawbones);
 	scene.add(skeleton.bone_objects);
-	console.log("Created skeleton?");
+	console.log("Skeleton complete.");
+
+	parseWeightsFile(bone_text, skeleton);
+
 
 	// Load ogre, extract the mesh from weird obj object hierarchy bullshit
 	var ogre;
@@ -180,7 +231,6 @@ function init(){
 	var loader = new THREE.OBJLoader();
 	loader.load( 'resources/ogre-files/ogre.obj', function ( object ) {
 		var material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
-		console.log(material.opacity);
 		object.traverse( function ( child ) {
 		if ( child instanceof THREE.Mesh ) {
 			ogre = child;

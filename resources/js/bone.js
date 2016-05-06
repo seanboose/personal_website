@@ -1,5 +1,65 @@
 var rawbones = [];
 
+
+class Prism {
+
+	constructor(radius){
+		var trig = radius * 0.70710678;
+		var prism_material = new THREE.LineBasicMaterial({color: 0x00ffff});
+		this.objects = new THREE.Object3D();
+
+		this.disk_verts = [];
+		this.disk_verts.push(new THREE.Vector3(0, radius,   0,      1));
+		this.disk_verts.push(new THREE.Vector3(0, trig,     trig,   1));
+		this.disk_verts.push(new THREE.Vector3(0, 0,        radius, 1));
+		this.disk_verts.push(new THREE.Vector3(0, -trig,    trig,   1));
+		this.disk_verts.push(new THREE.Vector3(0, -radius,  0,      1));
+		this.disk_verts.push(new THREE.Vector3(0, -trig,   -trig,   1));
+		this.disk_verts.push(new THREE.Vector3(0, 0,       -radius, 1));
+		this.disk_verts.push(new THREE.Vector3(0, trig,    -trig,   1));
+		this.disk_verts.push(new THREE.Vector3(0, radius,   0,      1));
+
+		this.disk_geom = [];
+		this.disk_line = [];
+		for(var i=0; i<2; ++i){
+			this.disk_geom.push(new THREE.Geometry());
+			this.disk_line.push(new THREE.Line());
+			this.disk_line[i].material = prism_material;
+			this.objects.add(this.disk_line);
+		}
+
+		this.wall_geom = [];
+		this.wall_line = [];
+		for(var i=0; i<8; ++i){
+			this.wall_geom.push(new THREE.Geometry());
+			this.wall_line.push(new THREE.Line());
+			this.wall_line[i].material = prism_material;
+			this.objects.add(this.wall_line);
+		}
+	};
+
+	addLinesToScene(scene){
+		scene.add(this.disk_line[0]);
+		scene.add(this.disk_line[1]);
+
+		for(var i=0; i<this.wall_line.length; ++i){
+			scene.add(this.wall_line[i]);
+		}
+	};
+
+	setVisible(bool){
+
+		for(var i=0; i<this.disk_line.length; ++i){
+			this.disk_line[i].visible = bool;
+		}
+		for(var i=0; i<this.wall_line.length; ++i){
+			this.wall_line[i].visible = bool;
+		}
+	};
+
+}
+
+
 class Bone {
 
 	constructor (id, l, ti, ri, pid){
@@ -156,9 +216,6 @@ function createSkeletonFromRawBones(rawbones){
 		bones[cid] = new_bone;
 		if(pid == -1) doot.children.push(new_bone);
 		else bones[pid].children.push(new_bone);
-
-		console.log("BONE ID:" + cid);
-		console.log(ri);
 	}
 
 	doot.bone_vector = bones;
@@ -185,6 +242,9 @@ function determineNHat(t_hat){
 	return n_hat;
 }
 
+function parseWeightsFile(text, doot){
+}
+
 
 // Convert the bones file into an array of RawBones
 function parseBoneFile(text){
@@ -192,15 +252,12 @@ function parseBoneFile(text){
 
 	var line_num = 0;
 	var lines = text.split("\n");
-	console.log(lines);
-	console.log("Number of lines in file: " + lines.length);
 
 	var rawbones = [];
 
 	for(var i=0; i<lines.length-1; ++i){
 		// Parse an individual line
 		line = lines[i].split(" ");
-		console.log(line);
 
 		var id = line[0];
 		var parent = line[1];
@@ -210,9 +267,6 @@ function parseBoneFile(text){
 
 		rawbones.push(new RawBone(id, parent, dx, dy, dz));
 	}
-
-	console.log("Nunber of bones extracted: " + rawbones.length);
-	console.log("(There's a blank line at the end of the file)");
 
 	return rawbones;
 }
