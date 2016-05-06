@@ -198,11 +198,12 @@ function init(){
 	render();
 
 	function render(){
-		drawSkeleton();
-
-		if(ogre_loaded){
-			// Do ogre thangs
+		if(!ogre_loaded){
+			requestAnimationFrame(render);
+			return;
 		}
+
+		drawSkeleton();
 
 		renderer.render(scene, camera);
 		requestAnimationFrame(render);
