@@ -277,18 +277,12 @@ function parseWeightsFile(text, doot){
 		doot.bone_vector[bone_num].weights.push(parseFloat(lines[i]));
 		++vert_num;
 		if(vert_num == num_verts){
-			console.log("Bone " + bone_num +" finished.");
-			console.log("i: " + i + ", length: " + lines.length);
 			vert_num = 0;
 			++bone_num;
 		}
 	}
 
 	console.log("Parsed weights file.");
-	console.log("Current vert: " + vert_num);
-	console.log("Total verts:  " + num_verts);
-	console.log("Current bone: " +bone_num);
-	console.log("Total bones:  " + num_bones);
 }
 
 

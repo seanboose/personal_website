@@ -3,6 +3,7 @@ var weight_text;
 var skeleton = new Skeleton(0,0,0);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 var scene = new THREE.Scene;
+var ogre;
 var bone_material = new THREE.LineBasicMaterial({color: 0xff00ff});
 var selected_material = new THREE.LineBasicMaterial({color: 0x00ff00});
 
@@ -37,6 +38,30 @@ document.body.onmousedown = function() {
 document.body.onmouseup = function() {
  	mousedown = false;
 }
+document.onkeypress = function (e) {
+    e = e || window.event;
+
+    // Rotate bones with left/right
+    if(selected_id != -2 && mousedown){
+    	if(e.keyCode == 37 || e.keyCode == 39){
+    		var rot_dir = 1;
+    		if(e.keyCode == 39) rot_dir = -1;
+    		var rot_axis = new THREE.Vector3(-1, 0, 0);
+    		var rot_matrix = new THREE.Matrix4().makeRotationAxis(rot_axis, rot_dir * rotation_speed);
+
+    		// Find the right bone
+    		var rot_bone;
+    		for(var i=0; i<skeleton.bone_vector.length; ++i){
+    			if(skeleton.bone_vector[i].line.id == selected_id){
+    				rot_bone = skeleton.bone_vector[i];
+    				break;
+    			}
+    		}
+    		rot_bone.si.multiply(rot_matrix);
+
+    	}
+    }
+};
 
 var raycaster = new THREE.Raycaster();
 raycaster.linePrecision = .05;
@@ -179,6 +204,14 @@ function drawBone(bone, trans){
 	new_trans.premultiply(bone.ti);
 	new_trans.premultiply(trans);
 
+	if(!bone.ui_set){
+		bone.ui_set = true;
+		bone.ui = new_trans.clone();
+	}
+	else {
+		bone.di = new_trans.clone();
+	}
+
 	for(var i=0; i<bone.children.length; ++i){
 		drawBone(bone.children[i], new_trans);
 	}
@@ -190,6 +223,45 @@ function drawSkeleton(){
 	for(var i=0; i<skeleton.children.length; ++i){
 		drawBone(skeleton.children[i], new THREE.Matrix4());
 	}
+}
+
+
+var empty_ogre_vertices;
+var init_ogre_vertices;
+var first_ogre = true;
+function createEmptyOgreVertices(){
+	empty_ogre_vertices = [];
+	for(var i=0; i<ogre.geometry.vertices.length; ++i){
+		empty_ogre_vertices.push(new THREE.Vector3());
+	}
+}
+
+function drawOgre() {
+
+	if(first_ogre){
+		first_ogre = false;
+		createEmptyOgreVertices()
+	}
+
+	var new_vertices = empty_ogre_vertices.slice(0);
+
+
+	for(var i=0; i<skeleton.bone_vector.length; ++i){
+		var bone = skeleton.bone_vector[i];
+
+		var trans = new THREE.Matrix4().getInverse(bone.ui).premultiply(bone.di);
+
+		var weights = bone.weights;
+		// for(var j=0; j<weights.length; ++j){
+		// 	var vert = init_ogre_vertices[j].clone();
+		// 	vert.applyMatrix3(trans);
+		// 	vert.multiplyScalar(weights[j]);
+		// 	new_vertices[i].add(vert);
+		// }
+	}
+
+	// ogre.geometry.vertices = new_vertices;
+	// ogre.geometry.verticesNeedUpdate = true;
 }
 
 function init(){
@@ -242,7 +314,6 @@ function init(){
 
 
 	// Load ogre, extract the mesh from weird obj object hierarchy bullshit
-	var ogre;
 	var ogre_loaded = false;
 	console.log("Loading ogre obj...");
 	var loader = new THREE.OBJLoader();
@@ -255,6 +326,8 @@ function init(){
 			ogre.material = material;
 			ogre.material.opacity = .5;
 			ogre.material.transparent = true;
+			ogre.geometry = new THREE.Geometry().fromBufferGeometry(ogre.geometry);
+			init_ogre_vertices = ogre.geometry.vertices;
 			scene.add(ogre);
 			console.log("Ogre loaded.");
 		}
@@ -271,6 +344,7 @@ function init(){
 		}
 
 		drawSkeleton();
+		drawOgre();
 
 		renderer.render(scene, camera);
 		requestAnimationFrame(render);
