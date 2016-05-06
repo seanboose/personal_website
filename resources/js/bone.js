@@ -6,7 +6,6 @@ class Prism {
 	constructor(radius){
 		var trig = radius * 0.70710678;
 		var prism_material = new THREE.LineBasicMaterial({color: 0x00ffff});
-		this.objects = new THREE.Object3D();
 
 		this.disk_verts = [];
 		this.disk_verts.push(new THREE.Vector3(0, radius,   0,      1));
@@ -25,7 +24,6 @@ class Prism {
 			this.disk_geom.push(new THREE.Geometry());
 			this.disk_line.push(new THREE.Line());
 			this.disk_line[i].material = prism_material;
-			this.objects.add(this.disk_line);
 		}
 
 		this.wall_geom = [];
@@ -34,8 +32,22 @@ class Prism {
 			this.wall_geom.push(new THREE.Geometry());
 			this.wall_line.push(new THREE.Line());
 			this.wall_line[i].material = prism_material;
-			this.objects.add(this.wall_line);
 		}
+
+
+		this.axes_vert_0 = [new THREE.Vector3(0,  0,  0),
+							new THREE.Vector3(0, .1,  0)];
+		this.axes_vert_1 = [new THREE.Vector3(0,  0,  0),
+							new THREE.Vector3(0,  0, .1)];
+		this.axes_geom_0 = new THREE.Geometry();
+		this.axes_geom_1 = new THREE.Geometry();
+		this.axes_line_0 = new THREE.Line();
+		this.axes_line_1 = new THREE.Line();
+		var axes_material_0 = new THREE.LineBasicMaterial({color: 0xff0000});
+		var axes_material_1 = new THREE.LineBasicMaterial({color: 0x0000ff});
+		this.axes_line_0.material = axes_material_0;
+		this.axes_line_1.material = axes_material_1;
+
 	};
 
 	addLinesToScene(scene){
@@ -45,6 +57,9 @@ class Prism {
 		for(var i=0; i<this.wall_line.length; ++i){
 			scene.add(this.wall_line[i]);
 		}
+
+		scene.add(this.axes_line_0);
+		scene.add(this.axes_line_1);
 	};
 
 	setVisible(bool){
@@ -55,6 +70,9 @@ class Prism {
 		for(var i=0; i<this.wall_line.length; ++i){
 			this.wall_line[i].visible = bool;
 		}
+
+		this.axes_line_0.visible = bool;
+		this.axes_line_1.visible = bool;
 	};
 
 }

@@ -122,6 +122,24 @@ function drawPrism(bone, trans){
 	prism.disk_line[1].geometry = prism.disk_geom[1];
 
 
+	axis_0_verts = [];
+	axis_1_verts = [];
+	for(var i=0; i<prism.axes_vert_0.length; ++i){
+		var axis_0 = prism.axes_vert_0[i].clone();
+		var axis_1 = prism.axes_vert_1[i].clone();
+		axis_0.applyMatrix4(trans);
+		axis_1.applyMatrix4(trans);
+		axis_0_verts.push(new THREE.Vector3(axis_0.x, axis_0.y, axis_0.z));
+		axis_1_verts.push(new THREE.Vector3(axis_1.x, axis_0.y, axis_0.z));
+	}
+	prism.axes_geom_0.vertices = axis_0_verts;
+	prism.axes_geom_1.vertices = axis_1_verts;
+	prism.axes_geom_0.verticesNeedUpdate = true;
+	prism.axes_geom_1.verticesNeedUpdate = true;
+	prism.axes_line_0.geometry = prism.axes_geom_0;
+	prism.axes_line_1.geometry = prism.axes_geom_1;
+
+
 }
 
 
@@ -146,7 +164,6 @@ function drawBone(bone, trans){
 	bone.geom.boundingBox = null;
 	bone.line.geometry = bone.geom;
 	if(bone.line.id == selected_id) {
-		prism.objects.visible = true;
 		drawPrism(bone, trans.clone().multiply(bone.ti).multiply(bone.si));
 		bone.line.material = selected_material;
 	}
